@@ -279,8 +279,8 @@ function Alphabets() {
             if(incorrectGuess<6){
                 setClickedLetters([...clickedLetters,letter])
             }
-            
         }
+
         let index = []
         if(!qusn.word.includes(letter.toLowerCase())){
             if(!clickedLetters.includes(letter.toLowerCase())){
@@ -299,7 +299,6 @@ function Alphabets() {
                
             }
 
-       
             const newBlank = blank.split('')
             const word = qusn.word.toLowerCase()
             for(let i=0;i<word.length;i++){
@@ -319,7 +318,7 @@ function Alphabets() {
             setPopUp(true)
     }
     const timer = setTimeout(() => {
-      setPopup(true);
+            setPopup(true);
     }, 2000); // 1 second
     return () => clearTimeout(timer);
   
@@ -329,7 +328,6 @@ function Alphabets() {
   function fun(){
      setPopUp(false)
      setIncorrectGuess(0)
-     
      setQusn(wordList[n])
      setCorrectGuess(0)
      setBlank('_'.repeat(newQusn.word.length))
@@ -338,7 +336,7 @@ function Alphabets() {
 
   return (
     <div className='relative flex flex-col list-none justify-center items-center'>
-  <div className='w-[90vw] md:w-[70vw] lg:w-[50vw] h-[100vh] text-[#000000] bg-gradient-to-b from-[#0c1d3c] to-[#000814]'>
+  <div className='w-[90vw] md:w-[70vw] lg:w-[50vw] h-[100vh] text-[#000000] w-auto h-auto bg-gradient-to-b from-[#0c1d3c] to-[#000814]'>
     <div className='flex justify-center'>
       <img 
         src="https://res.cloudinary.com/dybw1km5u/image/upload/v1752250598/Screenshot_2025-07-11_214528_b3aytu.png" 
