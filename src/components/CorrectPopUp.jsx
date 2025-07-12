@@ -12,7 +12,7 @@ function CorrectPopUp(props) {
 
        <h1 className='text-2xl font-bold text-[#1e293b] mb-2'>Congrats!</h1>
        <p className='text-gray-700 mb-4 text-xl'>You found the word: <span className='text-[#193175] font-bold'>{qusn.word}</span></p>
-       <button className='w-[50] bg-[#193175] hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition duration-200' onClick={onPopUp}>Next</button>
+       <button className='w-[50] bg-[#193175] hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition duration-200 w-auto' onClick={onPopUp}>Next</button>
     </div>
     </div>
   )
