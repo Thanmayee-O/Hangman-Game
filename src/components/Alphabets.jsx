@@ -3,6 +3,7 @@ import Words from './Words'
 import { useState } from 'react';
 import CorrectPopUp from './CorrectPopUp';
 import IncorrectPop from './IncorrectPop'
+import { useNavigate,useLocation } from 'react-router-dom';
 const wordList = [{
         word: "guitar",
         hint: "A musical instrument with strings."
@@ -266,14 +267,21 @@ const wordList = [{
 ];
 let random = Math.floor(Math.random()*wordList.length)
 function Alphabets() {
+    const navigate = useNavigate()
+    const location = useLocation()
+    const username = location.state?.username;
+    console.log(username)
+
    const letters = Array.from({length : 26} , (_,i) => String.fromCharCode(65+i))
    
    const [qusn , setQusn] = useState(wordList[random])
    const [blank , setBlank] = useState('_'.repeat(qusn.word.length))
    const [incorrectGuess , setIncorrectGuess] = useState(0)
    const [clickedLetters, setClickedLetters] = useState([])
-   const [correctGuess , setCorrectGuess] = useState(0) 
+   const [correctGuess , setCorrectGuess] = useState(0)  
+   const [score , setScore] = useState(0);
    const [popUp , setPopUp] = useState(false)   
+   
         const onAlpha=(letter)=>{
         if(!clickedLetters.includes(letter)){
             if(incorrectGuess<6){
@@ -317,9 +325,12 @@ function Alphabets() {
        if(incorrectGuess===6 || correctGuess===qusn.word.length){
             setPopUp(true)
     }
+    if(correctGuess===qusn.word.length){
+        setScore(prev=>prev+1)
+    }
     const timer = setTimeout(() => {
-            setPopup(true);
-    }, 2000); // 1 second
+            setPopUp(true);
+    }, 1000); // 1 second
     return () => clearTimeout(timer);
   
    } , [incorrectGuess,correctGuess,qusn.word.length])
@@ -332,25 +343,36 @@ function Alphabets() {
      setCorrectGuess(0)
      setBlank('_'.repeat(newQusn.word.length))
      setClickedLetters([])
+    
 }
-
+  function quitBut(){
+      navigate('/userpage')
+  }
+    console.log(username)
   return (
-    <div className='relative flex flex-col list-none justify-center items-center'>
-  <div className='w-[90vw] md:w-[70vw] lg:w-[50vw] h-[100vh] text-[#000000] w-auto h-auto bg-gradient-to-b from-[#0c1d3c] to-[#000814]'>
-    <div className='flex justify-center'>
-      <img 
-        src="https://res.cloudinary.com/dybw1km5u/image/upload/v1752250598/Screenshot_2025-07-11_214528_b3aytu.png" 
-        className='h-[25vh] md:h-[30vh] lg:h-[35vh] w-[40vw] md:w-[30vw] lg:w-[20vw] mt-7 rounded-lg'
-      />
-    </div>
+    <div className='relative flex flex-col list-none justify-end items-center '>
+  
+    <div className="bg-[url('https://res.cloudinary.com/dybw1km5u/image/upload/v1752509331/hangman_img_uyayvj.jpg')] w-auto h-[120vh] rounded-lg w-[90vw] md:w-[70vw] lg:w-[50vw] h-[100vh] text-[#000000] w-auto h-auto bg-gradient-to-b from-[#0c1d3c] to-[#000814]">
+            <div className="flex flex-row justify-between">
+            <div>
+                {username && (
+                   <p className="font-bold text-[20px] mt-8 ml-8 text-black-200">Welcome, {username}</p>
+                   )}
+                 <p className="font-bold text-[20px] mt-8 ml-8">Score: <span>{score}</span></p>
+                 </div>
+              <div>
+                  <button onClick={quitBut} className="mt-2 px-6 py-2 bg-yellow-400 hover:bg-yellow-500 text-black font-semibold rounded-md shadow-lg transition duration-300 mr-5 mt-5">Quit</button>
+              </div>
+            </div>
+    <div className='flex flex-col justify-end items-center h-[100vh] mt-6'>
     <Words blank={blank} qusn={qusn} incorrectGuess={incorrectGuess}/>
     <div className='flex flex-row flex-wrap list-none justify-center items-center w-[90vw] md:w-[70vw] lg:w-[50vw]'>
-      <ul className='grid grid-cols-8 md:grid-cols-9 mt-7'>
+      <ul className="grid grid-cols-6 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-9 gap-2 justify-items-center mt-4">
         {letters.map((each , i) => (
           <li key={i}>
             <button 
               onClick={() => onAlpha(each)} 
-              className={`rounded-lg m-1 md:m-2 size-10 md:size-12 font-bold ${clickedLetters.includes(each)? 'bg-[#315bd3] text-[#ffffff]' : 'bg-[#193175]  text-[#ffffff]'}`}
+              className={`rounded-lg m-1 md:m-2 size-10 md:size-12 font-bold ${clickedLetters.includes(each)? 'bg-[#E0E0E0]  px-4 py-2 rounded shadow text-[#000000]' : 'bg-[#fffefd]  text-[#000000]'}`}
             >
               {each}
             </button>
@@ -361,7 +383,7 @@ function Alphabets() {
     <div className='flex justify-center'>
       <button 
         onClick={()=>fun()} 
-        className='bg-[#1e3a8a] hover:bg-blue-700 text-white font-semibold py-1.5 px-3 md:py-2 md:px-4 rounded transition duration-200 mb-3 mt-5'
+        className='bg-yellow-400 hover:bg-yellow-500 hover:bg-blue-700 text-white font-semibold py-1.5 px-3 md:py-2 md:px-4 rounded transition duration-200 mb-3 mt-5'
       >
         Skip
       </button>
@@ -372,8 +394,10 @@ function Alphabets() {
     {correctGuess===qusn.word.length && popUp? <CorrectPopUp qusn={qusn} fun={fun} />: ''}
   </div>
 </div>
-
+</div>
   )
 }
 
 export default Alphabets
+
+
