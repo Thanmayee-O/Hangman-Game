@@ -346,7 +346,7 @@ function Alphabets() {
     
 }
   function quitBut(){
-      navigate('/userpage')
+      navigate('/')
   }
     console.log(username)
   return (

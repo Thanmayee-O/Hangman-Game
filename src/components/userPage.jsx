@@ -21,7 +21,7 @@ const LoginPage =() => {
     }
 
     return(
-        <div className="flex flex-col justify-center items-center h-auto w-auto bg-cover max-width-sm">
+        <div className="flex flex-col justify-center items-center h-auto w-auto bg-cover">
             <div className="bg-[url('https://res.cloudinary.com/dpqs7ibuh/image/upload/v1752508189/hangman_ixvqg5.jpg')] bg-cover h-[94vh] w-[30vw] flex flex-col justify-center items-center bg-no-repeat">
                 <form className="flex flex-col justify-center items-center backdrop-blur-sm space-y-4 bg-white/20  p-6 rounded-xl shadow-md mt-25">
                     <label htmlFor="name" className="text-lg font-semibold text-black drop-shadow-sm" >Username</label>
