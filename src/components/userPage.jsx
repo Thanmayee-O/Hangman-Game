@@ -51,7 +51,7 @@ const LoginPage =() => {
         : 
         (
           <div className="flex flex-col justify-center items-center h-auto w-auto bg-cover">
-            <div className="bg-[url('https://res.cloudinary.com/dpqs7ibuh/image/upload/v1752508189/hangman_ixvqg5.jpg')] bg-cover bg-center sm:h-screen w-[30vw] flex flex-col justify-center items-center">
+            <div className="bg-[url('https://res.cloudinary.com/dpqs7ibuh/image/upload/v1752508189/hangman_ixvqg5.jpg')] bg-cover bg-center sm:h-screen w-[33vw] flex flex-col justify-center items-center">
                 <form className="flex flex-col justify-center items-center backdrop-blur-sm space-y-4 bg-white/20  p-6 rounded-xl shadow-md mt-25">
                     <label htmlFor="name" className="text-lg font-semibold text-black drop-shadow-sm">Username</label>
                     <input value={username} id="name" onChange={nameInput} placeholder="Enter your username" className="px-4 py-2 rounded-md w-64 text-center text-black placeholder-gray-500 bg-white/80 shadow-inner focus:outline-none focus:ring-2 focus:ring-yellow-400"/>
