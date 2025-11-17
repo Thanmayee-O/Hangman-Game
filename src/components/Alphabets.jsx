@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Words from './Words'
-import { useState } from 'react';
 import CorrectPopUp from './CorrectPopUp';
 import IncorrectPop from './IncorrectPop'
 import { useNavigate,useLocation } from 'react-router-dom';
@@ -281,8 +280,12 @@ function Alphabets() {
    const [correctGuess , setCorrectGuess] = useState(0)  
    const [score , setScore] = useState(0);
    const [popUp , setPopUp] = useState(false)   
+   const [isMobile, setIsMobile] = useState(window.matchMedia("(max-width: 768px)").matches);
    
-        const onAlpha=(letter)=>{
+  
+   
+   
+   const onAlpha=(letter)=>{
         if(!clickedLetters.includes(letter)){
             if(incorrectGuess<6){
                 setClickedLetters([...clickedLetters,letter])
@@ -302,9 +305,7 @@ function Alphabets() {
            for(let i=0;i<qusn.word.length;i++){
                 if(qusn.word[i]===letter.toLowerCase()){
                     index.push(i);
-                   
-                }
-               
+                   }
             }
 
             const newBlank = blank.split('')
@@ -334,6 +335,14 @@ function Alphabets() {
     return () => clearTimeout(timer);
   
    } , [incorrectGuess,correctGuess,qusn.word.length])
+
+    useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const handleResize = (e) => setIsMobile(e.matches);
+    mediaQuery.addEventListener("change", handleResize);
+    return () => mediaQuery.removeEventListener("change", handleResize);
+  }, []);
+   
    let n = Math.floor(Math.random()*wordList.length)
    let newQusn = wordList[n]
   function fun(){
@@ -349,55 +358,101 @@ function Alphabets() {
       navigate('/')
   }
     console.log(username)
+
+console.log(isMobile)
   return (
-    <div className='relative flex flex-col list-none justify-end items-center '>
-  
-    <div className="bg-[url('https://res.cloudinary.com/dybw1km5u/image/upload/v1752509331/hangman_img_uyayvj.jpg')] w-auto h-[120vh] rounded-lg w-[90vw] md:w-[70vw] lg:w-[50vw] h-[100vh] text-[#000000] w-auto h-auto bg-gradient-to-b from-[#0c1d3c] to-[#000814]">
-            <div className="flex flex-row justify-between">
-            <div>
-                {username && (
-                   <p className="font-bold text-[20px] mt-8 ml-8 text-black-200">Welcome, {username}</p>
-                   )}
-                 <p className="font-bold text-[20px] mt-8 ml-8">Score: <span>{score}</span></p>
-                 </div>
-              <div>
-                  <button onClick={quitBut} className="mt-2 px-6 py-2 bg-yellow-400 hover:bg-yellow-500 text-black font-semibold rounded-md shadow-lg transition duration-300 mr-5 mt-5">Quit</button>
+    <div className="flex justify-center items-start px-4 py-6 bg-transparent">
+      {/* Card/container - background image kept exactly as provided */}
+      <div
+        className="relative w-full max-w-[1100px] rounded-lg overflow-hidden bg-cover bg-center shadow-2xl"
+        style={{
+          backgroundImage:
+            "url('https://res.cloudinary.com/dybw1km5u/image/upload/v1752509331/hangman_img_uyayvj.jpg')",
+        }}
+      >
+        {/* Overlay for contrast (doesn't change the image file or fonts) */}
+        <div className="w-full min-h-[70vh] sm:min-h-screen ">
+          {/* Header - stacks on small screens, row on larger */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 sm:p-6">
+            <div className="w-full sm:w-auto flex justify-end">
+              <button
+                onClick={quitBut}
+                className="sm:w-auto px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-black font-semibold rounded-md shadow-lg transition duration-300"
+                aria-label="Quit game"
+              >
+                Quit
+              </button>
+            </div>
+            <div className="px-1">
+              {username && <p className="font-bold text-[18px] sm:text-[20px] mt-2">Welcome, {username}</p>}
+              <p className="font-bold text-[18px] sm:text-[20px] mt-1">Score: <span className="text-[black]">{score}</span></p>
+            </div>
+
+            
+          </div>
+
+          {/* Main content */}
+          <div className="flex flex-col items-center w-full px-4 pb-8 mt-20">
+            {/* Words / puzzle display (keeps your component as-is) */}
+            <div className="w-full max-w-3xl">
+              <Words blank={blank} qusn={qusn} incorrectGuess={incorrectGuess} />
+            </div>
+
+            {/* Letters grid - mobile-first (3 cols) then increase on larger screens */}
+            <div className="w-full mt-6 flex justify-center px-2">
+              <ul className="grid grid-cols-6 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-9 gap-2 sm:gap-3 md:gap-4 justify-items-center w-full max-w-2xl">
+                {letters.map((each, i) => {
+                  const active = clickedLetters.includes(each);
+                  return (
+                    <li key={i} className="w-full flex justify-center">
+                      <button
+                        onClick={() => onAlpha(each)}
+                        className={`flex items-center justify-center rounded-lg font-bold transition-transform active:scale-95
+                        ${active ? 'bg-[#E0E0E0] px-4 py-2 shadow-inner text-black' : 'bg-[#fffefd] text-black px-4 py-2'}
+                        w-12 h-12 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14`}
+                        aria-pressed={active}
+                        aria-label={`Letter ${each}`}
+                      >
+                        {each}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+
+            {/* Skip button */}
+            <div className="w-full flex justify-center mt-5 px-4">
+              <button
+                onClick={() => fun()}
+                className="w-full sm:w-40 px-3 py-2 bg-yellow-400 hover:bg-yellow-500 text-black font-semibold rounded transition duration-200"
+                aria-label="Skip"
+              >
+                Skip
+              </button>
+            </div>
+          </div>
+
+          {/* Popups - centered overlay, responsive */}
+          
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="pointer-events-auto w-full max-w-md mx-4">
+                {incorrectGuess === 6 && <IncorrectPop qusn={qusn} fun={fun} />}
+                {correctGuess === qusn.word.length && <CorrectPopUp qusn={qusn} fun={fun} />}
               </div>
             </div>
-    <div className='flex flex-col justify-end items-center h-[100vh] mt-6'>
-    <Words blank={blank} qusn={qusn} incorrectGuess={incorrectGuess}/>
-    <div className='flex flex-row flex-wrap list-none justify-center items-center w-[90vw] md:w-[70vw] lg:w-[50vw]'>
-      <ul className="grid grid-cols-6 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-9 gap-2 justify-items-center mt-4">
-        {letters.map((each , i) => (
-          <li key={i}>
-            <button 
-              onClick={() => onAlpha(each)} 
-              className={`rounded-lg m-1 md:m-2 size-10 md:size-12 font-bold ${clickedLetters.includes(each)? 'bg-[#E0E0E0]  px-4 py-2 rounded shadow text-[#000000]' : 'bg-[#fffefd]  text-[#000000]'}`}
-            >
-              {each}
-            </button>
-          </li>
-        ))}
-      </ul>
+          
+        </div>
+      </div>
     </div>
-    <div className='flex justify-center'>
-      <button 
-        onClick={()=>fun()} 
-        className='bg-yellow-400 hover:bg-yellow-500 hover:bg-blue-700 text-white font-semibold py-1.5 px-3 md:py-2 md:px-4 rounded transition duration-200 mb-3 mt-5'
-      >
-        Skip
-      </button>
-    </div>
-  </div>  
-  <div className='absolute top-[40%] md:top-[350px] left-[10%] md:left-[400px] mt-1'>
-    {incorrectGuess===6 && popUp ? <IncorrectPop qusn={qusn} fun={fun}/> : ''}
-    {correctGuess===qusn.word.length && popUp? <CorrectPopUp qusn={qusn} fun={fun} />: ''}
-  </div>
-</div>
-</div>
+  
   )
-}
 
+  
+    
+
+
+}
 export default Alphabets
 
 
